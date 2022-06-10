@@ -1,5 +1,5 @@
 'use strict';
-
+import {manager as contentManager} from './contentApp/index'
 // Content script file will run in the context of web page.
 // With content script you can manipulate the web pages using
 // Document Object Model (DOM).
@@ -12,11 +12,15 @@
 // See https://developer.chrome.com/extensions/content_scripts
 
 // Log `title` of current active web page
-const pageTitle: string = document.head.getElementsByTagName('title')[0]
-  .innerHTML;
+const pageTitle: string = document.head.getElementsByTagName('title')[0]?document.head.getElementsByTagName('title')[0].innerHTML:'';
 console.log(
   `Page title is: '${pageTitle}' - evaluated by Chrome extension's 'contentScript.js' file`
 );
+
+
+const manager = new contentManager()
+manager.init()
+manager.main()
 
 // Communicate with background file by sending a message
 chrome.runtime.sendMessage(

@@ -9,7 +9,7 @@ chrome.runtime.onMessage.addListener((request, sender, sendResponse) => {
   if (request.type === 'GREETINGS') {
     const message: string = `Hi ${
       sender.tab ? 'Con' : 'Pop'
-    }, my name is Bac. I am from Background. It's great to hear from you.`;
+    }, my name is Bac. I am from Background. It's great to hear from you.1111`;
 
     // Log message coming from the `request` parameter
     console.log(request.payload.message);

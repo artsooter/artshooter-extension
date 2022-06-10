@@ -6,20 +6,12 @@
     <link rel="stylesheet" href="popup.css" />
 </head>
 <body>
-  <div class="app">
-    <p class="counter-label">Counter</p>
-    <div id="counter" class="counter"></div>
-    <div class="button-container">
-      <button id="decrementBtn" class="button">-</button>
-      <button id="incrementBtn" class="button">+</button>
-    </div>
-
-    <hr class="divider" />
-
-    <p class="title">Chrome Extension is Ready!</p>
-    <p class="subtitle">Start by updating <code>popup.html</code></p>
+  <div class="app" id="app">
   </div>
-
+  <footer>
+      <button id="clearTodoBtn">清空</button>
+      <button id="copyAndPasteClip">复制/粘贴</button>
+  </footer>
   <script src="popup.js"></script>
 
   <!--
