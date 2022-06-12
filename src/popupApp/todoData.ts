@@ -1,5 +1,5 @@
 import {copyClip, extensionStorage, readClip, uuid} from "../library/utils";
-import {todo,todoImportanceType,todoUrgencyType} from '../interface'
+import {todo,todoImportanceType,todoDataClassInterface,todoUrgencyType} from '../interface'
 /**
  * TodoList 数据维护
  * @function get set clear copy paste
@@ -14,31 +14,22 @@ const defaultData= {
     }
 }
 class TodoData{
-    private _list:Map<string,todo>
+    public _list:Array<todo>
+    private option:todoDataClassInterface
     private readonly keyInStorage:string
-    constructor() {
-        this._list=new Map()
+    constructor(_option:todoDataClassInterface) {
+        this._list=[]
+        this.option=_option
         this.keyInStorage = 'todoList'
     }
     // todo[]
     // extensionStorage里实际存储的是list:Array[]
-    // class里实际维护的是_list:Map{}
     get list(){
-        const arr:todo[] = []
-        this._list.forEach((value,key)=>{
-            arr.push({...value})
-        })
-        return arr
+        return this._list
     }
-    set list(arr){
-        this._list.clear()
-        arr.forEach(ele=>{
-            this._list.set(ele.id,ele)
-        })
-        this._setToStorage()
-    }
-    getTodoById (id:string):todo|undefined{
-        return this._list.get(id)
+    set list(value){
+        this._list=value
+        this.option.setListCallback()
     }
     addTodo (option:{}){
         const obj = {...defaultData.todoList,...option}
@@ -47,16 +38,26 @@ class TodoData{
         this.setTodo(obj)
     }
     setTodo (option:todo){
-        this._list.set(option.id,option)
+        const {list} = this
+        if(list.find(ele=>ele.id===option.id)){
+            // 修改todolist的内容的时候，不走 set list的逻辑。不刷新页面元素。
+            this._list = list.map(ele=>{
+                if(ele.id===option.id){
+                    return ({...ele,...option})
+                }return ele
+            })
+        }else{
+            this.list = list.concat(option)
+        }
         this._setToStorage()
     }
     delTodo (id:string){
-        this._list.delete(id)
+        this.list = this.list.filter(ele=>ele.id!==id)
         this._setToStorage()
     }
     async _getSyncFromStorage():Promise<void>{
         const arr = (await (extensionStorage.getSync(this.keyInStorage)||[])as [todo]||[])
-            .sort((a,b)=>a.createTime-b.createTime)
+            .sort((a,b)=>(a.createTime||0)-(b.createTime||0))
         this.list=arr
     }
     _setToStorage(){

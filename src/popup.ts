@@ -8,15 +8,15 @@ import TodoData from "./popupApp/todoData";
   class Todo {
     public data :TodoData
     constructor() {
-      this.data = new TodoData()
+      this.data = new TodoData({setListCallback:this._reset.bind(this)})
+      console.log(this.data)
       this.init()
     }
     // 初始化
     async init(){
       //操作按钮监听初始化
-      (document.getElementById('clearTodoBtn') as HTMLButtonElement).onclick=async ()=>{
-        await this.data.clear()
-        this._reset()
+      (document.getElementById('clearTodoBtn') as HTMLButtonElement).onclick= ()=>{
+         this.data.clear()
       }
       (document.getElementById('copyAndPasteClip') as HTMLButtonElement).onclick= ()=>{
         if(this.data.copyAndPaste()){
@@ -38,7 +38,6 @@ import TodoData from "./popupApp/todoData";
         button.innerHTML='新增'
         button.onclick=()=>{
           this.data.addTodo({importanceType:i})
-          this._reset()
         }
         this.data.list.forEach((ele)=>{
           if(ele.importanceType===i){
@@ -65,7 +64,7 @@ import TodoData from "./popupApp/todoData";
       if(checked)checkbox.setAttribute('checked',(checked||false)+'')
       checkbox.onclick = (e)=>{
         this.data.setTodo({
-          ...(this.data.getTodoById(id) as todo),
+          id,
           checked:(e.target as HTMLInputElement).checked})
       }
       // input
@@ -75,7 +74,7 @@ import TodoData from "./popupApp/todoData";
       if(text)input.value=text
       input.oninput = (e)=>{
         this.data.setTodo({
-          ...(this.data.getTodoById(id) as todo),
+          id,
           text:(e.target as HTMLInputElement).value})
       }
       // button
@@ -83,7 +82,6 @@ import TodoData from "./popupApp/todoData";
       button.innerHTML = 'X'
       button.onclick=(e)=>{
         this.data.delTodo(id)
-        this._reset()
       }
       div.appendChild(checkbox)
       div.appendChild(input)
