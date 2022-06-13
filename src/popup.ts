@@ -14,6 +14,9 @@ import TodoData from "./popupApp/todoData";
     }
     // 初始化
     async init(){
+      //页面html基本按钮初始化
+      // @ts-ignore
+      this._createButton()
       //操作按钮监听初始化
       (document.getElementById('clearTodoBtn') as HTMLButtonElement).onclick= ()=>{
          this.data.clear()
@@ -50,6 +53,18 @@ import TodoData from "./popupApp/todoData";
         if(nodes.length)div.appendChild(button)
         container.appendChild(div)
       }
+    }
+    // 生成基本按钮
+    _createButton():void{
+      const body = document.body
+      const footer = document.createElement('footer')
+      const clearButton = document.createElement('button')
+      const copyButton = document.createElement('button')
+      clearButton.setAttribute('id','clearTodoBtn')
+      copyButton.setAttribute('id','copyAndPasteClip')
+      footer.appendChild(clearButton)
+      footer.appendChild(copyButton)
+      body.appendChild(footer)
     }
     // 根据「label内容，checked状态」生成todoList Label
     _createLabel(option:todo):HTMLElement{
@@ -90,11 +105,10 @@ import TodoData from "./popupApp/todoData";
     }
   }
 
-  function init() {
-    const todo = new Todo()
-  }
 
-  document.addEventListener('DOMContentLoaded', init);
+  document.addEventListener('DOMContentLoaded', ()=>{
+    const todo = new Todo()
+  });
 })();
 // Communicate with background file by sending a message
 // chrome.runtime.sendMessage(
