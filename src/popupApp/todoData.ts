@@ -55,9 +55,10 @@ class TodoData{
         this.list = this.list.filter(ele=>ele.id!==id)
         this._setToStorage()
     }
-    async _getSyncFromStorage():Promise<void>{
+    async _getSyncFromStorage(initFlag:Boolean|undefined):Promise<void>{
         const arr = (await (extensionStorage.getSync(this.keyInStorage)||[])as [todo]||[])
             .sort((a,b)=>(a.createTime||0)-(b.createTime||0))
+            .filter(ele=>initFlag?(!ele.checked||(+new Date() - ele.createTime)<86400000):true)
         this.list=arr
     }
     _setToStorage(){
@@ -65,7 +66,7 @@ class TodoData{
     }
     async clear (){
         await extensionStorage.clear()
-        await this._getSyncFromStorage()
+        await this._getSyncFromStorage(false)
     }
     copyAndPaste(){
         const clipData = readClip()

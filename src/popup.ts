@@ -9,14 +9,13 @@ import TodoData from "./popupApp/todoData";
     public data :TodoData
     constructor() {
       this.data = new TodoData({setListCallback:this._reset.bind(this)})
-      console.log(this.data)
       this.init()
     }
     // 初始化
-    async init(){
+    async init():Promise<void>{
       //页面html基本按钮初始化
       // @ts-ignore
-      this._createButton()
+      this._createButton();
       //操作按钮监听初始化
       (document.getElementById('clearTodoBtn') as HTMLButtonElement).onclick= ()=>{
          this.data.clear()
@@ -26,7 +25,10 @@ import TodoData from "./popupApp/todoData";
           this._reset()
         }
       }
-      await this.data._getSyncFromStorage()
+      (document.getElementById('showAllBtn') as HTMLButtonElement).onclick= async ()=>{
+        this.data._getSyncFromStorage(false)
+      }
+      await this.data._getSyncFromStorage(true)
       this._reset()
     }
     // 初始化 todoList ==> view
@@ -60,10 +62,16 @@ import TodoData from "./popupApp/todoData";
       const footer = document.createElement('footer')
       const clearButton = document.createElement('button')
       const copyButton = document.createElement('button')
+      const showAllButton = document.createElement('button')
       clearButton.setAttribute('id','clearTodoBtn')
+      clearButton.innerHTML="清空"
       copyButton.setAttribute('id','copyAndPasteClip')
+      copyButton.innerHTML="复制/粘贴"
+      showAllButton.setAttribute('id','showAllBtn')
+      showAllButton.innerHTML="展示所有"
       footer.appendChild(clearButton)
       footer.appendChild(copyButton)
+      footer.appendChild(showAllButton)
       body.appendChild(footer)
     }
     // 根据「label内容，checked状态」生成todoList Label

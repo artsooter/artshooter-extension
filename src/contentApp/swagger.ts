@@ -7,7 +7,11 @@ const swagger = ()=>{
         newBtn.innerText='复制链接'
         newBtn.style.float = 'right'
         newBtn.onclick=(e:any)=>{
-            copyClip(e.target.parentNode.previousElementSibling?.childNodes[0].childNodes[0].innerHTML)
+            const text = (e.target.parentNode.previousElementSibling?
+                e.target.parentNode.previousElementSibling.childNodes[0].childNodes[0].innerHtml
+                :'')
+                .replace(/​/g, "")
+            copyClip(text)
             e.stopPropagation()
         }
         try {
