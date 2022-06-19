@@ -14,7 +14,7 @@ const defaultData= {
     }
 }
 class TodoData{
-    public _list:Array<todo>
+    private _list:Array<todo>
     private option:todoDataClassInterface
     private readonly keyInStorage:string
     constructor(_option:todoDataClassInterface) {
