@@ -5,16 +5,19 @@ import TodoData from "../popupApp/todoData";
 import React,{PureComponent} from "react";
 import ReactDOM from "react-dom/client";
 import {Button, Checkbox, Input} from 'shineout'
-
+// import style from "./style.css"
 const Todo = ({list,importanceType,changeHandle,addHandle,delHandle})=>{
+    // console.log(style.todoItemButton)
     return ( <div style={{margin:'24px'}}>
         {
             list.map((ele: todo )=>{
-                return (<div  key={ele.id} style={{display:'flex'}}>
+                // return (<div  className={style.todoItem} key={ele.id} >
+                return (<div style={{display:'flex',alignItems:'center'}}  key={ele.id} >
                     <Checkbox value={ele.checked} onChange={(v)=>{
                         changeHandle({id:ele.id,checked:v})
                     }} />
                     <Input value={ele.text} onChange={(v)=>changeHandle({id:ele.id,text:v})}/>
+                    {/*<Button className={style.todoItemButton} type={'danger'} onClick={()=>delHandle({id:ele.id})}>X</Button>*/}
                     <Button type={'danger'} onClick={()=>delHandle({id:ele.id})}>X</Button>
                 </div>)
             })
@@ -63,9 +66,9 @@ class TodoList extends PureComponent{
 
     render(){
         const {list} = this.state
-        const {data,changeHandle,delHandle,addHandle} = this
+        const {changeHandle,delHandle,addHandle} = this
         return(
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr'}}>
+            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',width:'700px'}}>
                 {this.todoImportanceTypes.map(ele=>{
                     const _list = list.filter(_ele=>_ele.importanceType===ele)
                     return (<Todo list={_list} importanceType={ele} key={ele}

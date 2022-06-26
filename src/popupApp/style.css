@@ -1,0 +1,13 @@
+.todoItem{
+    display:flex;
+    align-items:center;
+}
+.todoItemInput{
+
+}
+.todoItemButton{
+    visibility: hidden;
+}
+.todoItem:hover .todoItemButton{
+    visibility: initial;
+}

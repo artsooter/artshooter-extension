@@ -8,7 +8,7 @@ const swagger = ()=>{
         newBtn.style.float = 'right'
         newBtn.onclick=(e:any)=>{
             const text = (e.target.parentNode.previousElementSibling?
-                e.target.parentNode.previousElementSibling.childNodes[0].childNodes[0].innerHtml
+                e.target.parentNode.previousElementSibling.childNodes[0].childNodes[0].innerText
                 :'')
                 .replace(/​/g, "")
             copyClip(text)
