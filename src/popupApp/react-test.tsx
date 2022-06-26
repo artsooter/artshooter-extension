@@ -5,20 +5,18 @@ import TodoData from "../popupApp/todoData";
 import React,{PureComponent} from "react";
 import ReactDOM from "react-dom/client";
 import {Button, Checkbox, Input} from 'shineout'
-// import style from "./style.css"
+import style from "./style.css"
 const Todo = ({list,importanceType,changeHandle,addHandle,delHandle})=>{
-    // console.log(style.todoItemButton)
+    console.log(style.todoItemButton)
     return ( <div style={{margin:'24px'}}>
         {
             list.map((ele: todo )=>{
-                // return (<div  className={style.todoItem} key={ele.id} >
-                return (<div style={{display:'flex',alignItems:'center'}}  key={ele.id} >
+                return (<div  className={style.todoItem} key={ele.id} >
                     <Checkbox value={ele.checked} onChange={(v)=>{
                         changeHandle({id:ele.id,checked:v})
                     }} />
                     <Input value={ele.text} onChange={(v)=>changeHandle({id:ele.id,text:v})}/>
-                    {/*<Button className={style.todoItemButton} type={'danger'} onClick={()=>delHandle({id:ele.id})}>X</Button>*/}
-                    <Button type={'danger'} onClick={()=>delHandle({id:ele.id})}>X</Button>
+                    <Button className={style.todoItemButton} type={'danger'} onClick={()=>delHandle({id:ele.id})}>X</Button>
                 </div>)
             })
         }

@@ -36,7 +36,18 @@ const common = {
       // Help webpack in understanding CSS files imported in .js files
       {
         test: /\.css$/,
-        use: [MiniCssExtractPlugin.loader, 'css-loader'],
+        use: [
+          // MiniCssExtractPlugin.loader,
+          "style-loader",
+          {
+            loader: 'css-loader',
+            options: {
+              modules: true,
+              modules : {
+                localIdentName: '[name]__[local]__[hash:base64:5]',
+              },
+              importLoaders: 1}
+          }],
       },
       {
         test: /\.less$/,
@@ -84,9 +95,9 @@ const common = {
       ],
     }),
     // Extract CSS into separate files
-    new MiniCssExtractPlugin({
-      filename: '[name].css',
-    }),
+    // new MiniCssExtractPlugin({
+    //   filename: '[name].css',
+    // }),
     new webpack.ProvidePlugin({
       process: 'process/browser',
     }),
