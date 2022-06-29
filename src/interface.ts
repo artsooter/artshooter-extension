@@ -8,6 +8,7 @@ export interface todo{
     checked?:boolean,
     createTime?:number,
     importanceType?:todoImportanceType,
+    importanceTypeLabel?:string,
     urgencyType?:todoUrgencyType,
 }
 export interface todoDataClassInterface{

@@ -6,9 +6,9 @@ import React,{PureComponent} from "react";
 import ReactDOM from "react-dom/client";
 import {Button, Checkbox, Input} from 'shineout'
 import style from "./style.css"
-const Todo = ({list,importanceType,changeHandle,addHandle,delHandle})=>{
-    console.log(style.todoItemButton)
+const Todo = ({list,importanceType,changeHandle,titleChangeHandle,addHandle,delHandle})=>{
     return ( <div style={{margin:'24px'}}>
+        <Input value={list[0]?.importanceTypeLabel||importanceType} onChange={text=>titleChangeHandle(text,list)} />
         {
             list.map((ele: todo )=>{
                 return (<div  className={style.todoItem} key={ele.id} >
@@ -49,6 +49,10 @@ class TodoList extends PureComponent{
         await this.data._getSyncFromStorage(true)
         this.setState({list:this.data.list})
     }
+    titleChangeHandle(text:string,list:todo[]){
+        list.forEach(ele=>this.data.setTodo({...ele,importanceTypeLabel:text}))
+        this.update()
+    }
     changeHandle(option:todo){
         this.data.setTodo(option)
         this.update()
@@ -64,7 +68,7 @@ class TodoList extends PureComponent{
 
     render(){
         const {list} = this.state
-        const {changeHandle,delHandle,addHandle} = this
+        const {changeHandle,titleChangeHandle,delHandle,addHandle} = this
         return(
             <div style={{display:'grid',gridTemplateColumns:'1fr 1fr',width:'700px'}}>
                 {this.todoImportanceTypes.map(ele=>{
@@ -73,12 +77,12 @@ class TodoList extends PureComponent{
                                   changeHandle={changeHandle}
                                   delHandle={delHandle}
                                   addHandle={addHandle}
+                                  titleChangeHandle={titleChangeHandle}
                     />)
                 })}
             </div>
         )
     }
-
 }
 
 

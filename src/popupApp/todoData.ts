@@ -11,6 +11,7 @@ const defaultData= {
         checked:false,
         createTime:+new Date(),
         importanceType:todoImportanceType.something,
+        importanceTypeLabel:'',
     }
 }
 class TodoData{
@@ -38,7 +39,6 @@ class TodoData{
         this.setTodo(obj)
     }
     setTodo (option:todo){
-        console.log(this.list)
         const {list} = this
         if(list.find(ele=>ele.id===option.id)){
             // 修改todolist的内容的时候，不走 set list的逻辑。不刷新页面元素。
