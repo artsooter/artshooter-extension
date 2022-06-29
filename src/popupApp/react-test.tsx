@@ -4,11 +4,11 @@ import {todo, todoImportanceType} from '../interface'
 import TodoData from "../popupApp/todoData";
 import React,{PureComponent} from "react";
 import ReactDOM from "react-dom/client";
-import {Button, Checkbox, Input} from 'shineout'
+import {Button, Checkbox, Input,EditableArea} from 'shineout'
 import style from "./style.css"
 const Todo = ({list,importanceType,changeHandle,titleChangeHandle,addHandle,delHandle})=>{
     return ( <div style={{margin:'24px'}}>
-        <Input value={list[0]?.importanceTypeLabel||importanceType} onChange={text=>titleChangeHandle(text,list)} />
+        <EditableArea value={list[0]?.importanceTypeLabel||importanceType} onChange={text=>titleChangeHandle(text,list)} />
         {
             list.map((ele: todo )=>{
                 return (<div  className={style.todoItem} key={ele.id} >
@@ -41,6 +41,7 @@ class TodoList extends PureComponent{
         this.changeHandle = this.changeHandle.bind(this)
         this.delHandle = this.delHandle.bind(this)
         this.addHandle = this.addHandle.bind(this)
+        this.titleChangeHandle = this.titleChangeHandle.bind(this)
     }
     componentDidMount(){
         this.update()
