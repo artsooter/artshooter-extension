@@ -24,6 +24,10 @@ class TodoList extends PureComponent{
         this.changeHandle = this.changeHandle.bind(this)
         this.delHandle = this.delHandle.bind(this)
         this.addHandle = this.addHandle.bind(this)
+        this.addTypeHandle = this.addTypeHandle.bind(this)
+        this.delTypeHandle = this.delTypeHandle.bind(this)
+        this.changeTypeHandle = this.changeTypeHandle.bind(this)
+        this.clearHandle = this.clearHandle.bind(this)
     }
     componentDidMount(){
         this.update()
@@ -35,13 +39,16 @@ class TodoList extends PureComponent{
 
     addTypeHandle():void{
         this.data.setOption()
+        this.update()
     }
     delTypeHandle(id:string):void{
         const _options = this.data.option.todoDataOptions.filter(ele=>ele.uuid!==id)
         this.data.setOption(_options)
+        this.update()
     }
     changeTypeHandle(id:string,text:string):void{
-
+        this.data.setOption({uuid:id,importanceTypeLabel:text})
+        this.update()
     }
 
     changeHandle(option:todo){
@@ -52,47 +59,44 @@ class TodoList extends PureComponent{
         this.data.delTodo(option.id)
         this.update()
     }
-    addHandle(option:{importanceType:todoImportanceType}){
+    addHandle(option:{importanceType:string}){
         this.data.addTodo(option)
+        this.update()
+    }
+
+    *clearHandle(){
+        yield this.data.clear()
         this.update()
     }
     render(){
         const {list} = this.state
         return(
-            <div style={{display:'grid',gridTemplateColumns:'1fr 1fr'}}>
-                12
+            <div className={style.container}>
+                {this.data.option.todoDataOptions.map(ele=>{
+                    const _list = list.filter(_ele=>_ele.importanceType===ele.uuid)
+                    return (<div style={{margin:'24px'}} key={ele.uuid}>
+                        <EditableArea value={ele.importanceTypeLabel} onChange={text=>this.changeTypeHandle(ele.uuid,text)} />
+                        {
+                            _list.map((item: todo )=>{
+                                return (<div  className={style.todoItem} key={item.id} >
+                                    <Checkbox value={item.checked} onChange={(v)=>{
+                                        this.changeHandle({id:item.id,checked:v})
+                                    }} />
+                                    <Input value={item.text} onChange={(v)=>this.changeHandle({id:item.id,text:v})}/>
+                                    <Button className={style.todoItemButton} type={'danger'} onClick={()=>this.delHandle({id:item.id})}>X</Button>
+                                </div>)
+                            })
+                        }
+                        <Button type={'primary'} onClick={()=>this.addHandle({importanceType:ele.uuid})}>新增</Button>
+                        <Button type={'primary'} onClick={()=>this.delTypeHandle( ele.uuid)}>删除项目</Button>
+                    </div>)
+                })}
+                <div><Button onClick={this.addTypeHandle}>
+                    新增分类
+                </Button></div>
             </div>
         )
     }
-
-    // render(){
-    //     const {list} = this.state
-    //     return(
-    //         <div style={{display:'grid',gridTemplateColumns:'1fr 1fr'}}>
-    //             {this.todoImportanceTypes.map(ele=>{
-    //                 const _list = list.filter(_ele=>_ele.importanceType===ele)
-    //                 return (<div style={{margin:'24px'}}>
-    //                     <EditableArea value={_list[0]?.importanceTypeLabel} onChange={text=>this.changeTypeHandle(typeId,text)} />
-    //                     {
-    //                         list.map((ele: todo )=>{
-    //                             return (<div  className={style.todoItem} key={ele.id} >
-    //                                 <Checkbox value={ele.checked} onChange={(v)=>{
-    //                                     this.changeHandle({id:ele.id,checked:v})
-    //                                 }} />
-    //                                 <Input value={ele.text} onChange={(v)=>this.changeHandle({id:ele.id,text:v})}/>
-    //                                 <Button className={style.todoItemButton} type={'danger'} onClick={()=>this.delHandle({id:ele.id})}>X</Button>
-    //                             </div>)
-    //                         })
-    //                     }
-    //                     {/*<Button type={'primary'} onClick={()=>this.addHandle({importanceType})}>新增</Button>*/}
-    //                 </div>)
-    //             })}
-    //             <div>
-    //                 <Button onClick={this.addTypeHandle}>新增类型</Button>
-    //             </div>
-    //         </div>
-    //     )
-    // }
 }
 
 
