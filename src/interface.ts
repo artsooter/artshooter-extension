@@ -7,12 +7,13 @@ export interface todo{
     text?:string,
     checked?:boolean,
     createTime?:number,
-    importanceType?:todoImportanceType,
+    importanceType?:string,
     importanceTypeLabel?:string,
     urgencyType?:todoUrgencyType,
 }
-export interface todoDataClassInterface{
-    setListCallback: voidFunc;
+export interface todoDataOption{
+    uuid:string,
+    importanceTypeLabel?:string
 }
 export enum todoImportanceType {
     'work'='work','unimportant'='unimportant','important'='important','something'='something'

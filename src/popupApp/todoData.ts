@@ -1,5 +1,12 @@
 import {copyClip, extensionStorage, readClip, uuid} from "../library/utils";
-import {todo,todoImportanceType,todoDataClassInterface,todoUrgencyType} from '../interface'
+import {
+    todo,
+    todoImportanceType,
+    todoDataClassInterface,
+    todoUrgencyType,
+    todoOption,
+    todoDataOption
+} from '../interface'
 /**
  * TodoList 数据维护
  * @function get set clear copy paste
@@ -14,23 +21,27 @@ const defaultData= {
         importanceTypeLabel:'',
     }
 }
+interface option{
+    todoDataOptions:Array<todoDataOption>
+}
+
 class TodoData{
     private _list:Array<todo>
-    private option:todoDataClassInterface
-    private readonly keyInStorage:string
-    constructor(_option:todoDataClassInterface) {
+    public option:option
+    private readonly dataStorageKey:string
+    private readonly optionStorageKey:string
+    constructor() {
         this._list=[]
-        this.option=_option
-        this.keyInStorage = 'todoList'
+        this.option={todoDataOptions:[]}
+        this.dataStorageKey = 'todoList'
+        this.optionStorageKey = 'todoListOption'
     }
-    // todo[]
     // extensionStorage里实际存储的是list:Array[]
     get list(){
         return this._list
     }
     set list(value){
         this._list=value
-        this.option && this.option.setListCallback && this.option.setListCallback()
     }
     addTodo (option:{}){
         const obj = {...defaultData.todoList,...option}
@@ -41,7 +52,6 @@ class TodoData{
     setTodo (option:todo){
         const {list} = this
         if(list.find(ele=>ele.id===option.id)){
-            // 修改todolist的内容的时候，不走 set list的逻辑。不刷新页面元素。
             this._list = list.map(ele=>{
                 if(ele.id===option.id){
                     return ({...ele,...option})
@@ -56,15 +66,41 @@ class TodoData{
         this.list = this.list.filter(ele=>ele.id!==id)
         this._setToStorage()
     }
+
+    setOption(option?:todoDataOption|Array<todoDataOption>){
+        const {todoDataOptions} = this.option
+        let _todoDataOptions
+        if(!option){
+            _todoDataOptions = todoDataOptions.concat({uuid:uuid(),importanceTypeLabel:'类型名称'})
+        }else{
+            if(Array.isArray(option)){
+                _todoDataOptions = option
+            }else{
+                _todoDataOptions = todoDataOptions.map(ele=>{
+                    if(ele.uuid===option.uuid){
+                        return ({...ele,option})
+                    }
+                    return ele
+                })
+            }
+        }
+        this.option.todoDataOptions = _todoDataOptions
+        this._setToStorage()
+    }
+
     async _getSyncFromStorage(initFlag:Boolean|undefined):Promise<void>{
-        const arr = (await (extensionStorage.getSync(this.keyInStorage)||[])as [todo]||[])
+        const arr = (await (extensionStorage.getSync(this.dataStorageKey)||[])as [todo]||[])
             .sort((a,b)=>(a.createTime||0)-(b.createTime||0))
             .filter(ele=>initFlag?(!ele.checked||(+new Date() - ele.createTime)<86400000):true)
         this.list=arr
+        const option = await extensionStorage.getSync(this.optionStorageKey) as option
+        this.option.todoDataOptions=option?option.todoDataOptions:[]
     }
     _setToStorage(){
-        extensionStorage.set(this.keyInStorage,this.list)
+        extensionStorage.set(this.dataStorageKey,this.list)
+        extensionStorage.set(this.optionStorageKey,this.option)
     }
+
     async clear (){
         await extensionStorage.clear()
         await this._getSyncFromStorage(false)

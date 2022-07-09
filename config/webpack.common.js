@@ -42,7 +42,6 @@ const common = {
           {
             loader: 'css-loader',
             options: {
-              modules: true,
               modules : {
                 localIdentName: '[name]__[local]__[hash:base64:5]',
               },
@@ -65,6 +64,10 @@ const common = {
           },
         }]
       },
+      // {
+      //   test: /\.scss$/,
+      //   use: ["style-loader",'css-loader',"scss-loader"]
+      // },
       // Check for images imported in .js files and
       {
         test: IMAGE_TYPES,

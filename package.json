@@ -4,7 +4,7 @@
   "description": "My Chrome Extension",
   "private": true,
   "scripts": {
-    "watch": "webpack --mode=development --watch --config config/webpack.config.js",
+    "dev": "webpack --mode=development --watch --config config/webpack.config.js",
     "build": "webpack --mode=production --config config/webpack.config.js"
   },
   "devDependencies": {
@@ -28,6 +28,8 @@
     "prop-types": "^15.8.1",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
+    "scss": "^0.2.4",
+    "scss-loader": "0.0.1",
     "shineout": "^1.10.9",
     "style-loader": "^3.3.1"
   }
