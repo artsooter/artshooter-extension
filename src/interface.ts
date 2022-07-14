@@ -10,6 +10,7 @@ export interface todo{
     importanceType?:string,
     importanceTypeLabel?:string,
     urgencyType?:todoUrgencyType,
+    endTime?:number,
 }
 export interface todoDataOption{
     uuid:string,

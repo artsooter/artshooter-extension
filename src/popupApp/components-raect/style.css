@@ -1,0 +1,8 @@
+.header{
+    height: 40px;
+    background-color: #717c8e;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 10px;
+}

@@ -78,7 +78,7 @@ class TodoData{
             }else{
                 _todoDataOptions = todoDataOptions.map(ele=>{
                     if(ele.uuid===option.uuid){
-                        return ({...ele,option})
+                        return ({...ele,...option})
                     }
                     return ele
                 })
