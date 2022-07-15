@@ -71,9 +71,8 @@ class TodoList extends PureComponent{
         this.update()
     }
     render(){
-        const {list} = this.state
-        console.log(list)
-        console.log(this.data.option)
+        const {list,curItem} = this.state
+        console.log('curItem =>',curItem)
         return(
             <div>
                 <Header addTypeHandle={this.addTypeHandle}/>
@@ -89,8 +88,8 @@ class TodoList extends PureComponent{
                                             this.changeHandle({id:item.id,checked:v})
                                         }} />
                                         <Input value={item.text} onClick={()=>{
-                                            console.log(item.text)
-                                            this.setState({cutItem:item})
+                                            console.log('item =>',item,item.text)
+                                            this.setState({curItem:item})
                                         }} onChange={(v)=>this.changeHandle({id:item.id,text:v})} />
                                         <Button className={style.todoItemButton} type={'danger'} onClick={()=>this.delHandle({id:item.id})}>X</Button>
                                     </div>)
@@ -101,6 +100,7 @@ class TodoList extends PureComponent{
                         </div>)
                     })}
                 </div>
+                {console.log("this.state.curItem =>",this.state.curItem)}
                 {this.state.curItem?<Info item={this.state.curItem}/>:null}
             </div>
         )

@@ -12,7 +12,6 @@ class Info extends PureComponent{
         const {item} = this.props
         return(
             <div className={style.info}>
-                {item.text}
                 <Input value={item.text}></Input>
             </div>
         )
