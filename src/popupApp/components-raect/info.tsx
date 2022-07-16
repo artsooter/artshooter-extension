@@ -1,23 +1,30 @@
-import React,{PureComponent} from "react";
+import React, {PureComponent} from "react";
 import ReactDOM from "react-dom/client";
-import {Button, Checkbox, Input,EditableArea} from 'shineout'
+import {Button, Checkbox, Input, DatePicker} from 'shineout'
 import style from "./style.css"
+
 // @ts-ignore
-class Info extends PureComponent{
-    constructor(props:any) {
+class Info extends PureComponent {
+    constructor(props: any) {
         super(props);
     }
 
-    render(){
-        const {item} = this.props
-        return(
+    render() {
+        const {item, changeHandle} = this.props
+        return (
             <div className={style.info}>
-                <Input value={item.text}></Input>
+                <div className={style.info_item}>
+                    <label>内容</label>
+                    <Input value={item.text} onChange={v=>changeHandle({id: item.id, text: v})}></Input>
+                </div>
+                <div className={style.info_item}>
+                    <label>时间</label>
+                    <DatePicker value={item.endTime} onChange={v=>changeHandle({id: item.id, endTime: v})}></DatePicker>
+                </div>
             </div>
         )
     }
 }
-
 
 
 export {Info}

@@ -8,5 +8,13 @@
 }
 
 .info{
-    width: 100%;
+    width: 50%;
+    margin: 0 auto;
+    height: 200px;
+}
+.info_item{
+    display: grid;
+    grid-template-columns: 80px 1fr;
+    align-items: center;
+    margin-bottom: 20px;
 }
