@@ -18,7 +18,11 @@ class Info extends PureComponent {
                     <Input value={item.text} onChange={v=>changeHandle({id: item.id, text: v})}></Input>
                 </div>
                 <div className={style.info_item}>
-                    <label>时间</label>
+                    <label>创建时间</label>
+                    <DatePicker key={item.createTime} value={item.createTime} disabled ></DatePicker>
+                </div>
+                <div className={style.info_item}>
+                    <label>截止时间</label>
                     <DatePicker value={item.endTime} onChange={v=>changeHandle({id: item.id, endTime: v})}></DatePicker>
                 </div>
             </div>

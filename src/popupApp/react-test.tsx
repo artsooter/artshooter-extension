@@ -23,7 +23,7 @@ class TodoList extends PureComponent {
             , todoImportanceType.something]
         this.state = {
             list: [],
-            curItem: {}
+            curItem: null
         }
         this.changeHandle = this.changeHandle.bind(this)
         this.delHandle = this.delHandle.bind(this)
@@ -40,7 +40,7 @@ class TodoList extends PureComponent {
 
     async update() {
         await this.data._getSyncFromStorage(true)
-        this.setState({list: this.data.list})
+        this.setState({list: this.data.list, curItem: null})
     }
 
     addTypeHandle(): void {
@@ -97,16 +97,25 @@ class TodoList extends PureComponent {
                                         <Checkbox value={item.checked} onChange={(v) => {
                                             this.changeHandle({id: item.id, checked: v})
                                         }}/>
-                                        <Input value={item.text} onClick={() => {this.setState({curItem: item})}}
+                                        <Input value={item.text} onClick={() => {
+                                            this.setState({curItem: item})
+                                        }}
                                                onChange={(v) => this.changeHandle({id: item.id, text: v})}/>
-                                        <Button className={style.todoItemButton} type={'danger'}
-                                                onClick={() => this.delHandle({id: item.id})}>X</Button>
+                                        <Button className={style.todoItemButton} type={'danger'}>
+                                            <Popover.Confirm onOk={() =>this.delHandle({id: item.id})}>
+                                                确认删除 ?
+                                            </Popover.Confirm>
+                                            X</Button>
                                     </div>)
                                 })
                             }
                             <Button type={'primary'}
                                     onClick={() => this.addHandle({importanceType: ele.uuid})}>新增</Button>
-                            <Button type={'default'} onClick={() => this.delTypeHandle(ele.uuid)}>删除项目</Button>
+                            <Button type={'default'} >
+                                <Popover.Confirm onOk={() =>this.delTypeHandle(ele.uuid)}>
+                                    确认删除 ?
+                                </Popover.Confirm>
+                                删除项目</Button>
                         </div>)
                     })}
                 </div>

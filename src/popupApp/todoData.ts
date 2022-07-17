@@ -99,7 +99,7 @@ class TodoData {
 
     async _getSyncFromStorage(initFlag: Boolean | undefined): Promise<void> {
         const arr = (await (extensionStorage.getSync(this.dataStorageKey) || []) as [todo] || [])
-            .sort((a, b) => (a.createTime || 0) - (b.createTime || 0))
+            .sort((a, b) => ((a.createTime) || 0) - (b.createTime || 0))
             .filter(ele => initFlag ? (!ele.checked || (+new Date() - ele.createTime) < 86400000) : true)
         this.list = arr
         const option = await extensionStorage.getSync(this.optionStorageKey) as option
