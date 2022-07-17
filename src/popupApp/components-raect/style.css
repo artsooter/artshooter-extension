@@ -10,7 +10,9 @@
 .info{
     width: 50%;
     margin: 0 auto;
-    height: 200px;
+    height: 230px;
+    border: 1px #A3ACB9 solid;
+    padding: 10px;
 }
 .info_item{
     display: grid;

@@ -6,12 +6,6 @@
 .todoItemInput{
 
 }
-.todoItemButton{
-    visibility: hidden;
-}
-.todoItem:hover .todoItemButton{
-    visibility: initial;
-}
 
 
 
@@ -22,3 +16,8 @@
     height: 100%;
 }
 
+
+.container :global(.so-tag){
+    padding: 0px !important;
+    width: 30px !important;
+}

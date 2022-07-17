@@ -3,7 +3,7 @@ import ReactDOM from "react-dom/client";
 import {Button, Checkbox, Input,EditableArea} from 'shineout'
 import style from "./style.css"
 // @ts-ignore
-class Header extends PureComponent{
+class HeaderTitle extends PureComponent{
     private state: {  };
     constructor(props:any) {
         super(props);
@@ -26,4 +26,4 @@ class Header extends PureComponent{
 
 
 
-export {Header}
+export {HeaderTitle}

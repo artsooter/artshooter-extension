@@ -4,9 +4,10 @@ import {todo, todoImportanceType} from '../interface'
 import TodoData from "../popupApp/todoData";
 import React, {PureComponent} from "react";
 import ReactDOM from "react-dom/client";
-import {Button, Checkbox, Input, EditableArea, Popover, DatePicker} from 'shineout'
+import {Button, Checkbox, Input, EditableArea, Popover,Tag, DatePicker} from 'shineout'
 import style from "./style.css"
-import {Header, Info} from "./components-raect";
+import {HeaderTitle, Info} from "./components-raect";
+import dayjs from 'dayjs'
 
 // @ts-ignore
 class TodoList extends PureComponent {
@@ -79,12 +80,27 @@ class TodoList extends PureComponent {
         this.update()
     }
 
+    countdown(item:todo){
+        let countdownType:string
+        let countdownTime :string
+        const {createTime,endTime} = item
+        if(endTime){
+            const countdown = dayjs(endTime).diff(dayjs(createTime),"days")
+            if(countdown===0) countdownTime='到期'
+            else countdownTime= countdown+'天'
+            countdownType='danger'
+        }else{
+            countdownType='default'
+            countdownTime=''
+        }
+        return {countdownType,countdownTime}
+    }
+
     render() {
         const {list, curItem} = this.state
-        console.log('curItem =>', curItem)
         return (
             <div>
-                <Header addTypeHandle={this.addTypeHandle}/>
+                <HeaderTitle addTypeHandle={this.addTypeHandle}/>
                 <div className={style.container}>
                     {this.data.option.todoDataOptions.map(ele => {
                         const _list = list.filter(_ele => _ele.importanceType === ele.uuid)
@@ -93,19 +109,16 @@ class TodoList extends PureComponent {
                                           onChange={text => this.changeTypeHandle(ele.uuid, text)}/>
                             {
                                 _list.map((item: todo) => {
+                                    const {countdownType,countdownTime} = this.countdown(item)
                                     return (<div className={style.todoItem} key={item.id}>
                                         <Checkbox value={item.checked} onChange={(v) => {
                                             this.changeHandle({id: item.id, checked: v})
                                         }}/>
                                         <Input value={item.text} onClick={() => {
                                             this.setState({curItem: item})
-                                        }}
-                                               onChange={(v) => this.changeHandle({id: item.id, text: v})}/>
-                                        <Button className={style.todoItemButton} type={'danger'}>
-                                            <Popover.Confirm onOk={() =>this.delHandle({id: item.id})}>
-                                                确认删除 ?
-                                            </Popover.Confirm>
-                                            X</Button>
+                                        }} onChange={(v) => this.changeHandle({id: item.id, text: v})}/>
+                                        {/*@ts-ignore*/}
+                                        {countdownTime?<Tag type={countdownType} >{countdownTime}</Tag>:null}
                                     </div>)
                                 })
                             }
@@ -119,7 +132,7 @@ class TodoList extends PureComponent {
                         </div>)
                     })}
                 </div>
-                {this.state.curItem ? <Info item={this.state.curItem} changeHandle={this.changeHandle}/> : null}
+                {this.state.curItem ? <Info item={this.state.curItem} delHandle={this.delHandle} changeHandle={this.changeHandle}/> : null}
             </div>
         )
     }
