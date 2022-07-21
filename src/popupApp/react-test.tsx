@@ -4,7 +4,7 @@ import {todo, todoImportanceType} from '../interface'
 import TodoData from "../popupApp/todoData";
 import React, {PureComponent} from "react";
 import ReactDOM from "react-dom/client";
-import {Button, Checkbox, Input, EditableArea, Popover,Tag, DatePicker} from 'shineout'
+import {Button, Checkbox, Input, EditableArea, Popover, Tag, DatePicker} from 'shineout'
 import style from "./style.css"
 import {HeaderTitle, Info} from "./components-raect";
 import dayjs from 'dayjs'
@@ -41,7 +41,13 @@ class TodoList extends PureComponent {
 
     async update() {
         await this.data._getSyncFromStorage(true)
-        this.setState({list: this.data.list, curItem: null})
+        const _list = this.data.list.sort((a, b) => {
+            const A = this.countdown(a).countdownValue
+            const B = this.countdown(b).countdownValue
+            return A - B
+        })
+        console.log()
+        this.setState({list: _list, curItem: null})
     }
 
     addTypeHandle(): void {
@@ -80,20 +86,23 @@ class TodoList extends PureComponent {
         this.update()
     }
 
-    countdown(item:todo){
-        let countdownType:string
-        let countdownTime :string
-        const {createTime,endTime} = item
-        if(endTime){
-            const countdown = dayjs(endTime).diff(dayjs(createTime),"days")
-            if(countdown===0) countdownTime='到期'
-            else countdownTime= countdown+'天'
-            countdownType='danger'
-        }else{
-            countdownType='default'
-            countdownTime=''
+    countdown(item: todo) {
+        let type: string
+        let time: string
+        let value: number = 0
+        const {createTime, endTime} = item
+        if (endTime) {
+            const countdown = dayjs(endTime).diff(dayjs(), "days")
+            if (countdown < 0) time = '到期'
+            else time = countdown + '天'
+            value = countdown
+            type = 'danger'
+        } else {
+            type = 'default'
+            time = ''
+            value = Infinity
         }
-        return {countdownType,countdownTime}
+        return {countdownType: type, countdownTime: time, countdownValue: value}
     }
 
     render() {
@@ -109,7 +118,7 @@ class TodoList extends PureComponent {
                                           onChange={text => this.changeTypeHandle(ele.uuid, text)}/>
                             {
                                 _list.map((item: todo) => {
-                                    const {countdownType,countdownTime} = this.countdown(item)
+                                    const {countdownType, countdownTime} = this.countdown(item)
                                     return (<div className={style.todoItem} key={item.id}>
                                         <Checkbox value={item.checked} onChange={(v) => {
                                             this.changeHandle({id: item.id, checked: v})
@@ -118,21 +127,22 @@ class TodoList extends PureComponent {
                                             this.setState({curItem: item})
                                         }} onChange={(v) => this.changeHandle({id: item.id, text: v})}/>
                                         {/*@ts-ignore*/}
-                                        {countdownTime?<Tag type={countdownType} >{countdownTime}</Tag>:null}
+                                        {countdownTime ? <Tag type={countdownType}>{countdownTime}</Tag> : null}
                                     </div>)
                                 })
                             }
                             <Button type={'primary'}
                                     onClick={() => this.addHandle({importanceType: ele.uuid})}>新增</Button>
-                            <Button type={'default'} >
-                                <Popover.Confirm onOk={() =>this.delTypeHandle(ele.uuid)}>
+                            <Button type={'default'}>
+                                <Popover.Confirm onOk={() => this.delTypeHandle(ele.uuid)}>
                                     确认删除 ?
                                 </Popover.Confirm>
                                 删除项目</Button>
                         </div>)
                     })}
                 </div>
-                {this.state.curItem ? <Info item={this.state.curItem} delHandle={this.delHandle} changeHandle={this.changeHandle}/> : null}
+                {this.state.curItem ? <Info item={this.state.curItem} delHandle={this.delHandle}
+                                            changeHandle={this.changeHandle}/> : null}
             </div>
         )
     }
