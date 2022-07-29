@@ -24,7 +24,11 @@ const defaultData = {
 }
 
 interface option {
-    todoDataOptions: Array<todoDataOption>
+    todoDataOptions: Array<todoDataOption>,
+    revokeData: {
+        list: Array<todo>,
+        option?: Pick<option, 'todoDataOptions'>
+    }
 }
 
 class TodoData {
@@ -35,7 +39,10 @@ class TodoData {
 
     constructor() {
         this._list = []
-        this.option = {todoDataOptions: []}
+        this.option = {
+            todoDataOptions: [],
+            revokeData: {list: []}
+        }
         this.dataStorageKey = 'todoList'
         this.optionStorageKey = 'todoListOption'
     }
@@ -46,7 +53,9 @@ class TodoData {
     }
 
     set list(value) {
-        this._list = value
+        // debugger;
+        this.option.revokeData.list = JSON.parse(JSON.stringify(this._list))
+        this._list = JSON.parse(JSON.stringify(value))
     }
 
     addTodo(option: {}) {
@@ -59,7 +68,7 @@ class TodoData {
     setTodo(option: todo) {
         const {list} = this
         if (list.find(ele => ele.id === option.id)) {
-            this._list = list.map(ele => {
+            this.list = list.map(ele => {
                 if (ele.id === option.id) {
                     return ({...ele, ...option})
                 }
@@ -97,11 +106,18 @@ class TodoData {
         this._setToStorage()
     }
 
+    revoke() {
+        console.log(JSON.parse(JSON.stringify(this.option.revokeData.list)))
+        console.log(JSON.parse(JSON.stringify(this.list)))
+        this.list = this.option.revokeData.list
+        this._setToStorage()
+    }
+
     async _getSyncFromStorage(initFlag: Boolean | undefined): Promise<void> {
         const arr = (await (extensionStorage.getSync(this.dataStorageKey) || []) as [todo] || [])
             .sort((a, b) => ((a.createTime) || 0) - (b.createTime || 0))
             .filter(ele => initFlag ? (!ele.checked || (+new Date() - ele.createTime) < 86400000) : true)
-        this.list = arr
+        this._list = arr
         const option = await extensionStorage.getSync(this.optionStorageKey) as option
         this.option.todoDataOptions = option ? option.todoDataOptions : []
     }

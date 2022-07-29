@@ -33,9 +33,11 @@ class TodoList extends PureComponent {
         this.delTypeHandle = this.delTypeHandle.bind(this)
         this.changeTypeHandle = this.changeTypeHandle.bind(this)
         this.clearHandle = this.clearHandle.bind(this)
+        this.revokeHandle = this.revokeHandle.bind(this)
     }
 
-    componentDidMount() {
+    async componentDidMount () {
+        await this.data._getSyncFromStorage(true)
         this.update()
     }
 
@@ -46,12 +48,16 @@ class TodoList extends PureComponent {
             const B = this.countdown(b).countdownValue
             return A - B
         })
-        console.log()
         this.setState({list: _list, curItem: null})
     }
 
     addTypeHandle(): void {
         this.data.setOption()
+        this.update()
+    }
+
+    revokeHandle():void{
+        this.data.revoke()
         this.update()
     }
 
@@ -92,8 +98,9 @@ class TodoList extends PureComponent {
         let value: number = 0
         const {createTime, endTime} = item
         if (endTime) {
-            const countdown = dayjs(endTime).diff(dayjs(), "days")
+            const countdown = Math.ceil(dayjs(endTime).hour(0).diff(dayjs().hour(0),'days',true))
             if (countdown < 0) time = '到期'
+            else if(countdown===0) time='今'
             else time = countdown + '天'
             value = countdown
             type = 'danger'
@@ -109,7 +116,7 @@ class TodoList extends PureComponent {
         const {list, curItem} = this.state
         return (
             <div>
-                <HeaderTitle addTypeHandle={this.addTypeHandle}/>
+                <HeaderTitle revokeHandle={this.revokeHandle} addTypeHandle={this.addTypeHandle}/>
                 <div className={style.container}>
                     {this.data.option.todoDataOptions.map(ele => {
                         const _list = list.filter(_ele => _ele.importanceType === ele.uuid)
